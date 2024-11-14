@@ -8,18 +8,35 @@ import (
 
 type Middleware func(httprouter.Handle) httprouter.Handle
 
+var validSourceTypes = map[string]bool{
+	"game":    true,
+	"server":  true,
+	"payment": true,
+}
+
 func SourceTypeCheckMiddleware(logger zerolog.Logger) Middleware {
 	return func(next httprouter.Handle) httprouter.Handle {
 		return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 			sourceType := r.Header.Get("Source-Type")
-			if sourceType != "game" && sourceType != "server" && sourceType != "payment" {
+			if _, ok := validSourceTypes[sourceType]; !ok {
 				logger.Warn().Msg("Missing Source-Type header")
 				http.Error(w, "Missing Source-Type header", http.StatusBadRequest)
 				return
 			}
-
-			logger.Info().Str("Source-Type", sourceType).Msg("Source-Type header found")
 			next(w, r, ps)
 		}
 	}
+}
+
+func ErrorHandlingMiddleware(logger zerolog.Logger, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				logger.Error().Interface("error", err).Msg("Unhandled error occurred")
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			}
+		}()
+
+		next.ServeHTTP(w, r)
+	})
 }
