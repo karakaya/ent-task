@@ -7,13 +7,13 @@ import (
 	"github.com/rs/zerolog"
 )
 
-type UserService struct {
+type UserTransactionService struct {
 	logger      zerolog.Logger
-	userHandler *internal.UserHandler
+	userHandler *internal.UserTransactionHandler
 }
 
-func NewUserService(logger zerolog.Logger, r *http.ServeMux) http.HandlerFunc {
-	service := &UserService{
+func NewUserTransactionService(logger zerolog.Logger, r *http.ServeMux) http.HandlerFunc {
+	service := &UserTransactionService{
 		logger:      logger,
 		userHandler: internal.NewUserHandler(logger),
 	}
@@ -21,7 +21,7 @@ func NewUserService(logger zerolog.Logger, r *http.ServeMux) http.HandlerFunc {
 	return service.Handle
 }
 
-func (s *UserService) Handle(w http.ResponseWriter, r *http.Request) {
+func (s *UserTransactionService) Handle(w http.ResponseWriter, r *http.Request) {
 	s.logger.Info().Msg("HIT!")
 	s.userHandler.Handle(1)
 	w.WriteHeader(http.StatusNotFound)

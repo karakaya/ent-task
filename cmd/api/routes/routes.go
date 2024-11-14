@@ -8,5 +8,6 @@ import (
 )
 
 func DefineRoutes(logger zerolog.Logger, r *http.ServeMux) {
-	r.Handle("/", user.NewUserService(logger, r))
+	r.Handle("POST /user/{userId}/transaction", user.NewUserTransactionService(logger, r))
+	// r.Handle("GET /user/{userId}/balance", nil)
 }
