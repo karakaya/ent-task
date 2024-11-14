@@ -24,5 +24,4 @@ func NewUserTransactionService(logger zerolog.Logger, r *http.ServeMux) http.Han
 func (s *UserTransactionService) Handle(w http.ResponseWriter, r *http.Request) {
 	s.logger.Info().Msg("HIT!")
 	s.userHandler.Handle(1)
-	w.WriteHeader(http.StatusNotFound)
 }

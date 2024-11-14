@@ -4,6 +4,7 @@ import (
 	"context"
 	"entain-golang-task/cmd/api/routes"
 	"entain-golang-task/database"
+	"entain-golang-task/migrations"
 	"net/http"
 	"os"
 	"os/signal"
@@ -24,6 +25,9 @@ func NewApp() *App {
 	router := http.NewServeMux()
 
 	database.ConnectToDB(logger)
+
+	//will be enabled by migrations_enabled flag
+	migrations.MigrateDB()
 
 	server := &http.Server{
 		Addr:    ":8080",
