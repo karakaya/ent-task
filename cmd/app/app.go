@@ -5,7 +5,11 @@ import (
 	"entain-golang-task/cmd/api/routes"
 	"entain-golang-task/database"
 	"entain-golang-task/migrations"
+	"errors"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+
 	"os"
 	"os/signal"
 	"syscall"
@@ -15,14 +19,14 @@ import (
 )
 
 type App struct {
-	Router *http.ServeMux
+	Router *httprouter.Router
 	Server *http.Server
 	Logger zerolog.Logger
 }
 
 func NewApp() *App {
 	logger := zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr}).With().Timestamp().Logger()
-	router := http.NewServeMux()
+	router := httprouter.New()
 
 	database.ConnectToDB(logger)
 
@@ -45,7 +49,7 @@ func NewApp() *App {
 
 func (a *App) Run() {
 	go func() {
-		if err := a.Server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := a.Server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			a.Logger.Fatal().Err(err).Msg("Server failed to start")
 		}
 	}()
