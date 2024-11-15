@@ -12,8 +12,8 @@ import (
 
 func TestUserAccountBalanceHandler_GetAccountBalance(t *testing.T) {
 	t.Run("get account balance 20.3", func(t *testing.T) {
-		transactionRepository := new(pkgMock.UserTransactionRepository)
-		transactions := []pkg.UserTransaction{{
+		userTransactionRepository := new(pkgMock.UserTransactionRepository)
+		userTransactions := []pkg.UserTransaction{{
 			UserId:        1,
 			TransactionId: "transaction-1",
 			State:         "win",
@@ -39,9 +39,9 @@ func TestUserAccountBalanceHandler_GetAccountBalance(t *testing.T) {
 			},
 		}
 
-		transactionRepository.On("GetAllTransactionsByUserId", context.TODO(), uint64(1)).Return(transactions, nil)
+		userTransactionRepository.On("GetAllTransactionsByUserId", context.TODO(), uint64(1)).Return(userTransactions, nil)
 
-		handler := internal.NewNewUserAccountBalanceHandlerWithInterfaces(zerolog.Logger{}, transactionRepository)
+		handler := internal.NewNewUserAccountBalanceHandlerWithInterfaces(zerolog.Logger{}, userTransactionRepository)
 
 		expectedOutput := &internal.UserAccountBalanceOutput{
 			UserId:  uint64(1),

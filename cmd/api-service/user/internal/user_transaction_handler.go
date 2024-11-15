@@ -15,16 +15,20 @@ type UserTransactionHandler struct {
 	userTransactionRepository pkg.UserTransactionRepository
 }
 
-func NewUserHandler(logger zerolog.Logger) *UserTransactionHandler {
+func NewUserTransactionHandler(logger zerolog.Logger) *UserTransactionHandler {
+	return NewUserTransactionHandlerWithInterfaces(logger, pkg.NewUserTransactionRepository(database.DB))
+}
+
+func NewUserTransactionHandlerWithInterfaces(logger zerolog.Logger, userTransactionRepository pkg.UserTransactionRepository) *UserTransactionHandler {
 	return &UserTransactionHandler{
 		logger:                    logger,
-		userTransactionRepository: pkg.NewUserTransactionRepository(database.DB),
+		userTransactionRepository: userTransactionRepository,
 	}
 }
 
-//TODO: do we need to check if the user exists?
+func (h *UserTransactionHandler) SaveUserTransaction(ctx context.Context, userId uint64, input UserTransactionInput) (*UserTransactionOutput, error) {
+	//TODO: do we need to check if the user exists?
 
-func (h *UserTransactionHandler) Handle(ctx context.Context, userId uint64, input UserTransactionInput) (*UserTransactionOutput, error) {
 	isExistingTransaction, err := h.userTransactionRepository.IsExistingUserTransaction(ctx, input.TransactionId)
 	if err != nil {
 		return nil, err

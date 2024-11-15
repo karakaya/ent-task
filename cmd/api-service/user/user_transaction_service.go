@@ -23,7 +23,7 @@ type AccountTransactionService struct {
 func NewUserTransactionService(logger zerolog.Logger) httprouter.Handle {
 	service := &AccountTransactionService{
 		logger:                 logger,
-		userTransactionHandler: internal.NewUserHandler(logger),
+		userTransactionHandler: internal.NewUserTransactionHandler(logger),
 	}
 
 	return service.Handle
@@ -50,7 +50,7 @@ func (s *AccountTransactionService) Handle(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	accountTransactionOutput, err := s.userTransactionHandler.Handle(context.TODO(), userId, input)
+	accountTransactionOutput, err := s.userTransactionHandler.SaveUserTransaction(context.TODO(), userId, input)
 	//might not be sustainable
 	if err != nil && (!errors.Is(err, utils.ErrTransactionExists) && !errors.Is(err, utils.ErrAccountBalanceCannotBeNegative)) {
 		utils.WriteJSONError(s.logger, w, http.StatusInternalServerError, utils.ErrInternalServerErr)
