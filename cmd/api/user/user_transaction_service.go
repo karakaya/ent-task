@@ -50,7 +50,7 @@ func (s *UserTransactionService) Handle(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	err = s.userHandler.Handle(context.TODO(), userId, input)
+	output, err := s.userHandler.Handle(context.TODO(), userId, input)
 	//might not be sustainable
 	if err != nil && (!errors.Is(err, utils.ErrTransactionExists) && !errors.Is(err, utils.ErrAccountBalanceCannotBeNegative)) {
 		utils.WriteJSONError(s.logger, w, http.StatusInternalServerError, utils.ErrInternalServerErr)
@@ -63,5 +63,5 @@ func (s *UserTransactionService) Handle(w http.ResponseWriter, r *http.Request, 
 	}
 
 	//w.WriteHeader(http.StatusCreated) it's 200[OK] in the document, so...
-	utils.WriteJSONMessage(w, http.StatusOK, "transaction processed successfully")
+	utils.WriteJSONResponse(s.logger, w, http.StatusOK, output)
 }

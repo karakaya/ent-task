@@ -28,3 +28,13 @@ func WriteJSONMessage(w http.ResponseWriter, statusCode int, message string) {
 
 	json.NewEncoder(w).Encode(Message{Message: message})
 }
+
+func WriteJSONResponse(logger zerolog.Logger, w http.ResponseWriter, statusCode int, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	if data != nil {
+		if err := json.NewEncoder(w).Encode(data); err != nil {
+			logger.Error().Err(err).Msg(err.Error())
+		}
+	}
+}

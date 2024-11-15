@@ -24,47 +24,58 @@ func NewUserHandler(logger zerolog.Logger) *UserTransactionHandler {
 	}
 }
 
-func (h *UserTransactionHandler) Handle(ctx context.Context, userId uint64, input UserTransactionInput) error {
+func (h *UserTransactionHandler) Handle(ctx context.Context, userId uint64, input UserTransactionInput) (*UserTransactionOutput, error) {
 	isExistingTransaction, err := h.userTransactionRepository.IsExistingUserTransaction(ctx, input.TransactionId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if isExistingTransaction {
-		return utils.ErrTransactionExists
+		return nil, utils.ErrTransactionExists
 	}
 
 	userTransactions, err := h.userTransactionRepository.GetAllTransactionsByUserId(ctx, userId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	userAccountBalance, err := core.SumAllTransactions(userTransactions)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	//TODO: current account balance will be added to the response
-	canAddTransaction, _, err := core.CanAddTransaction(userAccountBalance, input.Amount, input.State)
+	canAddTransaction, currentAccountBalance, err := core.CanAddTransaction(userAccountBalance, input.Amount, input.State)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if !canAddTransaction {
-		return utils.ErrAccountBalanceCannotBeNegative
+		return nil, utils.ErrAccountBalanceCannotBeNegative
 	}
 
 	err = h.userTransactionRepository.AddTransaction(ctx, pkg.UserTransaction{
 		UserId:        userId,
 		TransactionId: input.TransactionId,
 		State:         input.State,
-		Amount:        input.Amount, //TODO: will address to balance check
+		Amount:        input.Amount,
 	})
 
-	return err
+	if err != nil {
+		return nil, err
+	}
+	output := &UserTransactionOutput{
+		TransactionId:  input.TransactionId,
+		AccountBalance: currentAccountBalance,
+	}
+	return output, err
 }
 
 type UserTransactionInput struct {
 	State         pkg.TransactionState `json:"state"`
 	Amount        string               `json:"amount"`
 	TransactionId string               `json:"transactionId"`
+}
+
+type UserTransactionOutput struct {
+	TransactionId  string `json:"transactionId"`
+	AccountBalance string `json:"accountBalance"`
 }
