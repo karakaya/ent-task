@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"ent-golang-task/cmd/api-service/user/internal"
-	"ent-golang-task/pkg"
 	"ent-golang-task/pkg/core"
+	"ent-golang-task/pkg/repository"
 	"ent-golang-task/pkg/utils"
 	"errors"
 	"net/http"
@@ -55,7 +55,7 @@ func (s *AccountTransactionService) Handle(w http.ResponseWriter, r *http.Reques
 
 	input.Amount = validatedAmount
 
-	if input.State == "" || (input.State != pkg.StateLose && input.State != pkg.StateWin) {
+	if input.State == "" || (input.State != repository.StateLose && input.State != repository.StateWin) {
 		utils.WriteJSONError(s.logger, w, http.StatusBadRequest, utils.ErrInvalidState)
 		return
 	}

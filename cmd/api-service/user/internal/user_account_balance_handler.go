@@ -3,23 +3,23 @@ package internal
 import (
 	"context"
 	"ent-golang-task/database"
-	"ent-golang-task/pkg"
 	"ent-golang-task/pkg/core"
+	"ent-golang-task/pkg/repository"
 	"github.com/rs/zerolog"
 )
 
 type UserAccountBalanceHandler struct {
 	logger                    zerolog.Logger
-	userTransactionRepository pkg.UserTransactionRepository
+	userTransactionRepository repository.UserTransactionRepository
 }
 
 func NewUserAccountBalanceHandler(logger zerolog.Logger) *UserAccountBalanceHandler {
-	return NewNewUserAccountBalanceHandlerWithInterfaces(logger, pkg.NewUserTransactionRepository(database.DB))
+	return NewNewUserAccountBalanceHandlerWithInterfaces(logger, repository.NewUserTransactionRepository(database.DB))
 }
 
 func NewNewUserAccountBalanceHandlerWithInterfaces(
 	logger zerolog.Logger,
-	userTransactionRepository pkg.UserTransactionRepository,
+	userTransactionRepository repository.UserTransactionRepository,
 ) *UserAccountBalanceHandler {
 	return &UserAccountBalanceHandler{
 		logger:                    logger,

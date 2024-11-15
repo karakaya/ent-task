@@ -3,8 +3,8 @@ package internal
 import (
 	"context"
 	"ent-golang-task/database"
-	"ent-golang-task/pkg"
 	"ent-golang-task/pkg/core"
+	"ent-golang-task/pkg/repository"
 	"ent-golang-task/pkg/utils"
 
 	"github.com/rs/zerolog"
@@ -12,14 +12,14 @@ import (
 
 type UserTransactionHandler struct {
 	logger                    zerolog.Logger
-	userTransactionRepository pkg.UserTransactionRepository
+	userTransactionRepository repository.UserTransactionRepository
 }
 
 func NewUserTransactionHandler(logger zerolog.Logger) *UserTransactionHandler {
-	return NewUserTransactionHandlerWithInterfaces(logger, pkg.NewUserTransactionRepository(database.DB))
+	return NewUserTransactionHandlerWithInterfaces(logger, repository.NewUserTransactionRepository(database.DB))
 }
 
-func NewUserTransactionHandlerWithInterfaces(logger zerolog.Logger, userTransactionRepository pkg.UserTransactionRepository) *UserTransactionHandler {
+func NewUserTransactionHandlerWithInterfaces(logger zerolog.Logger, userTransactionRepository repository.UserTransactionRepository) *UserTransactionHandler {
 	return &UserTransactionHandler{
 		logger:                    logger,
 		userTransactionRepository: userTransactionRepository,
@@ -57,7 +57,7 @@ func (h *UserTransactionHandler) SaveUserTransaction(ctx context.Context, userId
 		return nil, utils.ErrAccountBalanceCannotBeNegative
 	}
 
-	err = h.userTransactionRepository.AddTransaction(ctx, pkg.UserTransaction{
+	err = h.userTransactionRepository.AddTransaction(ctx, repository.UserTransaction{
 		UserId:        userId,
 		TransactionId: input.TransactionId,
 		State:         input.State,
@@ -77,9 +77,9 @@ func (h *UserTransactionHandler) SaveUserTransaction(ctx context.Context, userId
 }
 
 type UserTransactionInput struct {
-	State         pkg.TransactionState `json:"state"`
-	Amount        string               `json:"amount"`
-	TransactionId string               `json:"transactionId"`
+	State         repository.TransactionState `json:"state"`
+	Amount        string                      `json:"amount"`
+	TransactionId string                      `json:"transactionId"`
 }
 
 type UserTransactionOutput struct {

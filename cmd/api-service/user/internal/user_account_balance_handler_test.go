@@ -3,8 +3,8 @@ package internal_test
 import (
 	"context"
 	"ent-golang-task/cmd/api-service/user/internal"
-	"ent-golang-task/pkg"
 	pkgMock "ent-golang-task/pkg/mocks"
+	"ent-golang-task/pkg/repository"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -13,7 +13,7 @@ import (
 func TestUserAccountBalanceHandler_GetAccountBalance(t *testing.T) {
 	t.Run("get account balance 20.3", func(t *testing.T) {
 		userTransactionRepository := new(pkgMock.UserTransactionRepository)
-		userTransactions := []pkg.UserTransaction{{
+		userTransactions := []repository.UserTransaction{{
 			UserId:        1,
 			TransactionId: "transaction-1",
 			State:         "win",

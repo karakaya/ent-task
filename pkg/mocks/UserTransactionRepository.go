@@ -4,7 +4,7 @@ package mocks
 
 import (
 	context "context"
-	pkg "ent-golang-task/pkg"
+	pkg "ent-golang-task/pkg/repository"
 
 	mock "github.com/stretchr/testify/mock"
 )

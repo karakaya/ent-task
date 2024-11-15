@@ -1,8 +1,8 @@
 package core_test
 
 import (
-	"ent-golang-task/pkg"
 	"ent-golang-task/pkg/core"
+	"ent-golang-task/pkg/repository"
 	"ent-golang-task/pkg/utils"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -30,7 +30,7 @@ func TestValidateTransactionAmount(t *testing.T) {
 
 func TestSumAllTransactions(t *testing.T) {
 	t.Run("positive, 15.11", func(t *testing.T) {
-		userTransactions := []pkg.UserTransaction{{
+		userTransactions := []repository.UserTransaction{{
 			UserId:        1,
 			TransactionId: "transaction-1",
 			State:         "win",

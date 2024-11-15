@@ -1,7 +1,7 @@
 package core
 
 import (
-	"ent-golang-task/pkg"
+	"ent-golang-task/pkg/repository"
 	"ent-golang-task/pkg/utils"
 	"fmt"
 	"math/big"
@@ -18,7 +18,7 @@ func ValidateTransactionAmount(amountStr string) (string, error) {
 	return amount.FloatString(2), nil
 }
 
-func SumAllTransactions(transactions []pkg.UserTransaction) (string, error) {
+func SumAllTransactions(transactions []repository.UserTransaction) (string, error) {
 	totalBalance := new(big.Rat)
 
 	for _, transaction := range transactions {
@@ -26,9 +26,9 @@ func SumAllTransactions(transactions []pkg.UserTransaction) (string, error) {
 		amountRat.SetString(transaction.Amount)
 
 		switch transaction.State {
-		case pkg.StateWin:
+		case repository.StateWin:
 			totalBalance.Add(totalBalance, amountRat)
-		case pkg.StateLose:
+		case repository.StateLose:
 			totalBalance.Sub(totalBalance, amountRat)
 		default:
 			return "", utils.ErrInvalidState
@@ -45,7 +45,7 @@ func SumAllTransactions(transactions []pkg.UserTransaction) (string, error) {
 	return balanceStr, nil
 }
 
-func CanAddTransaction(currentBalanceStr string, amountStr string, transactionState pkg.TransactionState) (bool, string, error) {
+func CanAddTransaction(currentBalanceStr string, amountStr string, transactionState repository.TransactionState) (bool, string, error) {
 	currentBalance := new(big.Rat)
 	_, ok := currentBalance.SetString(currentBalanceStr)
 	if !ok {
@@ -61,9 +61,9 @@ func CanAddTransaction(currentBalanceStr string, amountStr string, transactionSt
 	resultBalance := new(big.Rat).Set(currentBalance)
 
 	switch transactionState {
-	case pkg.StateWin:
+	case repository.StateWin:
 		resultBalance.Add(resultBalance, amountRat)
-	case pkg.StateLose:
+	case repository.StateLose:
 		resultBalance.Sub(resultBalance, amountRat)
 	default:
 		return false, "", utils.ErrInvalidState

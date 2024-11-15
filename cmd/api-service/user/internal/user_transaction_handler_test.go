@@ -3,8 +3,8 @@ package internal_test
 import (
 	"context"
 	"ent-golang-task/cmd/api-service/user/internal"
-	"ent-golang-task/pkg"
 	pkgMock "ent-golang-task/pkg/mocks"
+	"ent-golang-task/pkg/repository"
 	"ent-golang-task/pkg/utils"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
@@ -15,7 +15,7 @@ func TestUserTransactionHandler_SaveUserTransaction(t *testing.T) {
 	t.Run("negative balance", func(t *testing.T) {
 		userTransactionRepository := new(pkgMock.UserTransactionRepository)
 		userTransactionRepository.On("IsExistingUserTransaction", context.TODO(), "transaction-1").Return(false, nil)
-		userTransactions := []pkg.UserTransaction{{
+		userTransactions := []repository.UserTransaction{{
 			UserId:        1,
 			TransactionId: "transaction-1",
 			State:         "win",
@@ -39,7 +39,7 @@ func TestUserTransactionHandler_SaveUserTransaction(t *testing.T) {
 	t.Run("positive balance", func(t *testing.T) {
 		userTransactionRepository := new(pkgMock.UserTransactionRepository)
 		userTransactionRepository.On("IsExistingUserTransaction", context.TODO(), "transaction-1").Return(false, nil)
-		userTransactions := []pkg.UserTransaction{{
+		userTransactions := []repository.UserTransaction{{
 			UserId:        1,
 			TransactionId: "transaction-1",
 			State:         "win",
@@ -47,7 +47,7 @@ func TestUserTransactionHandler_SaveUserTransaction(t *testing.T) {
 		}}
 
 		userTransactionRepository.On("GetAllTransactionsByUserId", context.TODO(), uint64(1)).Return(userTransactions, nil)
-		userTransactionRepository.On("AddTransaction", context.TODO(), pkg.UserTransaction{
+		userTransactionRepository.On("AddTransaction", context.TODO(), repository.UserTransaction{
 			UserId:        uint64(1),
 			TransactionId: "transaction-1",
 			State:         "win",
