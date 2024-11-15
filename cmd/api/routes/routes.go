@@ -8,7 +8,7 @@ import (
 )
 
 func DefineRoutes(logger zerolog.Logger, r *httprouter.Router) {
-	r.POST("/user/:userId/transaction", middleware.Chain(user.NewUserTransactionService(logger, r), middleware.SourceTypeCheckMiddleware(logger), middleware.ContentTypeCheckMiddleware(logger)))
+	r.POST("/user/:userId/transaction", middleware.Chain(user.NewUserTransactionService(logger), middleware.SourceTypeCheckMiddleware(logger), middleware.ContentTypeCheckMiddleware(logger)))
 
-	//r.GET("/user/:userId/balance", middleware.Chain())
+	r.GET("/user/:userId/balance", user.NewUserAccountBalanceService(logger))
 }

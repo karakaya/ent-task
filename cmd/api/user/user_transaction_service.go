@@ -15,29 +15,27 @@ import (
 	"github.com/rs/zerolog"
 )
 
-type UserTransactionService struct {
-	logger      zerolog.Logger
-	userHandler *internal.UserTransactionHandler
+type AccountTransactionService struct {
+	logger                 zerolog.Logger
+	userTransactionHandler *internal.UserTransactionHandler
 }
 
-func NewUserTransactionService(logger zerolog.Logger, r *httprouter.Router) httprouter.Handle {
-	service := &UserTransactionService{
-		logger:      logger,
-		userHandler: internal.NewUserHandler(logger),
+func NewUserTransactionService(logger zerolog.Logger) httprouter.Handle {
+	service := &AccountTransactionService{
+		logger:                 logger,
+		userTransactionHandler: internal.NewUserHandler(logger),
 	}
 
 	return service.Handle
 }
 
-func (s *UserTransactionService) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (s *AccountTransactionService) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	userIdStr := ps.ByName("userId")
 	userId, err := strconv.ParseUint(userIdStr, 10, 64)
 	if err != nil {
 		utils.WriteJSONError(s.logger, w, http.StatusBadRequest, utils.ErrInvalidUserId)
 		return
 	}
-
-	panic("tet")
 
 	var input internal.UserTransactionInput
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -52,7 +50,7 @@ func (s *UserTransactionService) Handle(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	output, err := s.userHandler.Handle(context.TODO(), userId, input)
+	accountTransactionOutput, err := s.userTransactionHandler.Handle(context.TODO(), userId, input)
 	//might not be sustainable
 	if err != nil && (!errors.Is(err, utils.ErrTransactionExists) && !errors.Is(err, utils.ErrAccountBalanceCannotBeNegative)) {
 		utils.WriteJSONError(s.logger, w, http.StatusInternalServerError, utils.ErrInternalServerErr)
@@ -65,5 +63,5 @@ func (s *UserTransactionService) Handle(w http.ResponseWriter, r *http.Request, 
 	}
 
 	//w.WriteHeader(http.StatusCreated) it's 200[OK] in the document, so...
-	utils.WriteJSONResponse(s.logger, w, http.StatusOK, output)
+	utils.WriteJSONResponse(s.logger, w, http.StatusOK, accountTransactionOutput)
 }
