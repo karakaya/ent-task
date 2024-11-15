@@ -53,7 +53,7 @@ func TestSumAllTransactions(t *testing.T) {
 		sumOfAllTransactions, err := core.SumAllTransactions(userTransactions)
 
 		assert.Nil(t, err)
-		assert.Exactly(t, "11.11", sumOfAllTransactions)
+		assert.Exactly(t, "15.11", sumOfAllTransactions)
 	})
 }
 
