@@ -62,10 +62,12 @@ func (h *UserTransactionHandler) Handle(ctx context.Context, userId uint64, inpu
 	if err != nil {
 		return nil, err
 	}
+
 	output := &UserTransactionOutput{
 		TransactionId:  input.TransactionId,
 		AccountBalance: currentAccountBalance,
 	}
+
 	return output, err
 }
 
