@@ -35,7 +35,7 @@ func (h *UserTransactionHandler) Handle(ctx context.Context, userId uint64, inpu
 		UserId:        userId,
 		TransactionId: input.TransactionId,
 		State:         input.State,
-		Amount:        0, //TODO: will address to this type later
+		Amount:        input.Amount, //TODO: will address to balance check
 	})
 
 	return nil
