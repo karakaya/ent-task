@@ -24,6 +24,7 @@ type UserTransaction struct {
 type UserTransactionRepository interface {
 	IsExistingUserTransaction(ctx context.Context, transactionId string) (bool, error)
 	AddTransaction(ctx context.Context, userTransaction UserTransaction) error
+	GetAllTransactionsByUserId(ctx context.Context, userId uint64) ([]UserTransaction, error)
 }
 
 type userTransactionRepository struct {
@@ -73,4 +74,35 @@ func (r *userTransactionRepository) AddTransaction(ctx context.Context, userTran
 	}
 
 	return nil
+}
+
+func (r *userTransactionRepository) GetAllTransactionsByUserId(ctx context.Context, userId uint64) ([]UserTransaction, error) {
+	query := `
+		SELECT user_id, transaction_id, state, amount
+		FROM transactions
+		WHERE user_id = $1
+	`
+
+	rows, err := r.db.Query(ctx, query, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var transactions []UserTransaction
+
+	for rows.Next() {
+		var t UserTransaction
+		err := rows.Scan(&t.UserId, &t.TransactionId, &t.State, &t.Amount)
+		if err != nil {
+			return nil, err
+		}
+		transactions = append(transactions, t)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return transactions, nil
 }

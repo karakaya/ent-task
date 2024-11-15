@@ -18,15 +18,14 @@ func ValidateTransactionAmount(amountStr string) (string, error) {
 	return amount.FloatString(2), nil
 }
 
-func SumOfTransactions(transactions []string, transactionState pkg.TransactionState) (string, error) {
+func SumAllTransactions(transactions []pkg.UserTransaction) (string, error) {
 	totalBalance := new(big.Rat)
 
-	for _, amountStr := range transactions {
+	for _, transaction := range transactions {
 		amountRat := new(big.Rat)
-		amountRat.SetString(amountStr)
-		totalBalance.Add(totalBalance, amountRat)
+		amountRat.SetString(transaction.Amount)
 
-		switch transactionState {
+		switch transaction.State {
 		case pkg.StateWin:
 			totalBalance.Add(totalBalance, amountRat)
 		case pkg.StateLose:
@@ -46,17 +45,17 @@ func SumOfTransactions(transactions []string, transactionState pkg.TransactionSt
 	return balanceStr, nil
 }
 
-func CanAddTransaction(currentBalanceStr string, amountStr string, transactionState pkg.TransactionState) (bool, error) {
+func CanAddTransaction(currentBalanceStr string, amountStr string, transactionState pkg.TransactionState) (bool, string, error) {
 	currentBalance := new(big.Rat)
 	_, ok := currentBalance.SetString(currentBalanceStr)
 	if !ok {
-		return false, fmt.Errorf("invalid current balance format: %s", currentBalanceStr)
+		return false, "", fmt.Errorf("invalid current balance format: %s", currentBalanceStr)
 	}
 
 	amountRat := new(big.Rat)
 	_, ok = amountRat.SetString(amountStr)
 	if !ok {
-		return false, fmt.Errorf("invalid amount format: %s", amountStr)
+		return false, "", fmt.Errorf("invalid amount format: %s", amountStr)
 	}
 
 	resultBalance := new(big.Rat).Set(currentBalance)
@@ -67,12 +66,14 @@ func CanAddTransaction(currentBalanceStr string, amountStr string, transactionSt
 	case pkg.StateLose:
 		resultBalance.Sub(resultBalance, amountRat)
 	default:
-		return false, utils.ErrInvalidState
+		return false, "", utils.ErrInvalidState
 	}
 
 	if resultBalance.Sign() < 0 {
-		return false, fmt.Errorf("transaction would result in negative balance")
+		return false, "", nil
 	}
 
-	return true, nil
+	currentAccountBalance := resultBalance.FloatString(2)
+
+	return true, currentAccountBalance, nil
 }

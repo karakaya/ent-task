@@ -11,5 +11,6 @@ var (
 	ErrInvalidJsonBody   = errors.New("invalid json body")
 	ErrInternalServerErr = errors.New("internal server error")
 
-	ErrInvalidAmount = errors.New("invalid amount")
+	ErrInvalidAmount                  = errors.New("invalid amount")
+	ErrAccountBalanceCannotBeNegative = errors.New("transaction would result in negative balance")
 )

@@ -4,7 +4,9 @@ import (
 	"context"
 	"entain-golang-task/database"
 	"entain-golang-task/pkg"
+	"entain-golang-task/pkg/core"
 	"entain-golang-task/pkg/utils"
+
 	"github.com/rs/zerolog"
 )
 
@@ -31,6 +33,26 @@ func (h *UserTransactionHandler) Handle(ctx context.Context, userId uint64, inpu
 		return utils.ErrTransactionExists
 	}
 
+	userTransactions, err := h.userTransactionRepository.GetAllTransactionsByUserId(ctx, userId)
+	if err != nil {
+		return err
+	}
+
+	userAccountBalance, err := core.SumAllTransactions(userTransactions)
+	if err != nil {
+		return err
+	}
+
+	//TODO: current account balance will be added to the response
+	canAddTransaction, _, err := core.CanAddTransaction(userAccountBalance, input.Amount, input.State)
+	if err != nil {
+		return err
+	}
+
+	if !canAddTransaction {
+		return utils.ErrAccountBalanceCannotBeNegative
+	}
+
 	err = h.userTransactionRepository.AddTransaction(ctx, pkg.UserTransaction{
 		UserId:        userId,
 		TransactionId: input.TransactionId,
@@ -38,7 +60,7 @@ func (h *UserTransactionHandler) Handle(ctx context.Context, userId uint64, inpu
 		Amount:        input.Amount, //TODO: will address to balance check
 	})
 
-	return nil
+	return err
 }
 
 type UserTransactionInput struct {

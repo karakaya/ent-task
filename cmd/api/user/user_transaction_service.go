@@ -51,7 +51,8 @@ func (s *UserTransactionService) Handle(w http.ResponseWriter, r *http.Request, 
 	}
 
 	err = s.userHandler.Handle(context.TODO(), userId, input)
-	if err != nil && !errors.Is(err, utils.ErrTransactionExists) {
+	//might not be sustainable
+	if err != nil && (!errors.Is(err, utils.ErrTransactionExists) && !errors.Is(err, utils.ErrAccountBalanceCannotBeNegative)) {
 		utils.WriteJSONError(s.logger, w, http.StatusInternalServerError, utils.ErrInternalServerErr)
 		return
 	}
