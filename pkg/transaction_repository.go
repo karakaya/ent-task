@@ -18,7 +18,7 @@ type UserTransaction struct {
 	UserId        uint64           `json:"user_id"`
 	TransactionId string           `json:"transaction_id"`
 	State         TransactionState `json:"state"`
-	Amount        int64            `json:"amount"`
+	Amount        string           `json:"amount"`
 }
 
 type UserTransactionRepository interface {

@@ -44,5 +44,3 @@ func ErrorHandlingMiddleware(logger zerolog.Logger, next http.Handler) http.Hand
 		next.ServeHTTP(w, r)
 	})
 }
-
-type AppHandler func(http.ResponseWriter, *http.Request, httprouter.Params) error

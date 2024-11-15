@@ -46,7 +46,7 @@ func (s *UserTransactionService) Handle(w http.ResponseWriter, r *http.Request, 
 	defer r.Body.Close()
 
 	if input.State == "" || (input.State != pkg.StateLose && input.State != pkg.StateWin) {
-		utils.WriteJSONError(s.logger, w, http.StatusBadRequest, utils.ErrIncorrectState)
+		utils.WriteJSONError(s.logger, w, http.StatusBadRequest, utils.ErrInvalidState)
 		return
 	}
 

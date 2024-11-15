@@ -5,7 +5,7 @@ import "errors"
 var (
 	ErrTransactionExists = errors.New("transaction already exists")
 	ErrMissingSourceType = errors.New("missing Source-Type header")
-	ErrIncorrectState    = errors.New("incorrect state")
+	ErrInvalidState      = errors.New("invalid state")
 
 	ErrInvalidUserId     = errors.New("invalid userId")
 	ErrInvalidJsonBody   = errors.New("invalid json body")
