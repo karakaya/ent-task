@@ -5,7 +5,6 @@ import (
 	"entain-golang-task/cmd/api/routes"
 	"entain-golang-task/cmd/middleware"
 	"entain-golang-task/database"
-	"entain-golang-task/migrations"
 	"errors"
 	"net/http"
 
@@ -32,7 +31,7 @@ func NewApp() *App {
 	database.ConnectToDB(logger)
 
 	//will be enabled by migrations_enabled flag
-	migrations.MigrateDB()
+	//migrations.MigrateDB()
 	wrappedRouter := middleware.ErrorHandlingMiddleware(logger, router)
 
 	server := &http.Server{

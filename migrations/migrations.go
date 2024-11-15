@@ -2,6 +2,7 @@ package migrations
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 
 	"entain-golang-task/database"
@@ -36,7 +37,7 @@ func MigrateDB() {
 		log.Fatalf("failed to initialize migrate instance: %v", err)
 	}
 
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		log.Fatalf("migration failed: %v", err)
 	}
 

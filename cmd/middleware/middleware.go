@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"entain-golang-task/pkg/utils"
 	"github.com/julienschmidt/httprouter"
 	"github.com/rs/zerolog"
 	"net/http"
@@ -14,13 +15,16 @@ var validSourceTypes = map[string]bool{
 	"payment": true,
 }
 
+//ignored content-type json check
+
 func SourceTypeCheckMiddleware(logger zerolog.Logger) Middleware {
 	return func(next httprouter.Handle) httprouter.Handle {
 		return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 			sourceType := r.Header.Get("Source-Type")
 			if _, ok := validSourceTypes[sourceType]; !ok {
 				logger.Warn().Msg("Missing Source-Type header")
-				http.Error(w, "Missing Source-Type header", http.StatusBadRequest)
+				utils.WriteJSONError(logger, w, http.StatusBadRequest, utils.ErrMissingSourceType)
+
 				return
 			}
 			next(w, r, ps)
@@ -40,3 +44,5 @@ func ErrorHandlingMiddleware(logger zerolog.Logger, next http.Handler) http.Hand
 		next.ServeHTTP(w, r)
 	})
 }
+
+type AppHandler func(http.ResponseWriter, *http.Request, httprouter.Params) error

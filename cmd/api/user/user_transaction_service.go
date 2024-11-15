@@ -1,9 +1,14 @@
 package user
 
 import (
+	"context"
 	"encoding/json"
 	"entain-golang-task/cmd/api/user/internal"
+	"entain-golang-task/pkg"
+	"entain-golang-task/pkg/utils"
+	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 
@@ -25,20 +30,37 @@ func NewUserTransactionService(logger zerolog.Logger, r *httprouter.Router) http
 }
 
 func (s *UserTransactionService) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	var input UserTransactionInput
+	userIdStr := ps.ByName("userId")
+	userId, err := strconv.ParseUint(userIdStr, 10, 64)
+	if err != nil {
+		utils.WriteJSONError(s.logger, w, http.StatusBadRequest, utils.ErrInvalidUserId)
+		return
+	}
 
+	var input internal.UserTransactionInput
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
-		http.Error(w, "Invalid JSON body", http.StatusBadRequest)
+		utils.WriteJSONError(s.logger, w, http.StatusBadRequest, utils.ErrInvalidJsonBody)
 		return
 	}
 
 	defer r.Body.Close()
 
-	s.userHandler.Handle(1)
-}
+	if input.State == "" || (input.State != pkg.StateLose && input.State != pkg.StateWin) {
+		utils.WriteJSONError(s.logger, w, http.StatusBadRequest, utils.ErrIncorrectState)
+		return
+	}
 
-type UserTransactionInput struct {
-	State         string  `json:"state"`
-	Amount        float64 `json:"amount"`
-	TransactionId string  `json:"transactionId"`
+	err = s.userHandler.Handle(context.TODO(), userId, input)
+	if err != nil && !errors.Is(err, utils.ErrTransactionExists) {
+		utils.WriteJSONError(s.logger, w, http.StatusInternalServerError, utils.ErrInternalServerErr)
+		return
+	}
+
+	if err != nil {
+		utils.WriteJSONError(s.logger, w, http.StatusBadRequest, err)
+		return
+	}
+
+	//w.WriteHeader(http.StatusCreated) it's 200[OK] in the document, so...
+	utils.WriteJSONMessage(w, http.StatusOK, "transaction processed successfully")
 }
