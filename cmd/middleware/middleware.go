@@ -52,7 +52,7 @@ func ErrorHandlingMiddleware(logger zerolog.Logger, next http.Handler) http.Hand
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
-				logger.Error().Interface("error", err).Msg("Unhandled error occurred")
+				logger.Error().Interface("error", err).Msg("unhandled error occurred")
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			}
 		}()
@@ -65,5 +65,6 @@ func Chain(h httprouter.Handle, middlewares ...Middleware) httprouter.Handle {
 	for i := len(middlewares) - 1; i >= 0; i-- {
 		h = middlewares[i](h)
 	}
+
 	return h
 }
