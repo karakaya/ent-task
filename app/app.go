@@ -44,7 +44,7 @@ func NewApp() *App {
 	//will be enabled by migrations_enabled flag
 	logger.Info().Msgf("migrations_enabled %v", config.Database.MigrationsEnabled)
 	if config.Database.MigrationsEnabled {
-		migrations.MigrateDB()
+		migrations.MigrateDB(config, logger)
 	}
 
 	wrappedRouter := middleware.ErrorHandlingMiddleware(logger, router)

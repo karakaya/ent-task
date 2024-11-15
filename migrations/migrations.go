@@ -2,11 +2,11 @@ package migrations
 
 import (
 	"database/sql"
-	"errors"
-	"log"
-	"os"
-
 	"entain-golang-task/database"
+	"entain-golang-task/pkg/cfg"
+	"errors"
+	"github.com/rs/zerolog"
+	"log"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -14,7 +14,7 @@ import (
 	"github.com/jackc/pgx/v5/stdlib"
 )
 
-func MigrateDB() {
+func MigrateDB(config *cfg.Config, logger zerolog.Logger) {
 	connConfig := database.DB.Config().ConnConfig
 
 	dsn := stdlib.RegisterConnConfig(connConfig)
@@ -29,9 +29,13 @@ func MigrateDB() {
 	if err != nil {
 		log.Fatalf("failed to create migration driver: %v", err)
 	}
-	log.Print(os.Getwd())
+
+	sourceUrl := "file://migrations"
+	if config.RunningInDocker {
+		sourceUrl = "file:///app/migrations"
+	}
 	m, err := migrate.NewWithDatabaseInstance(
-		"file:///app/migrations",
+		sourceUrl,
 		"postgres", driver,
 	)
 
@@ -43,5 +47,5 @@ func MigrateDB() {
 		log.Fatalf("migration failed: %v", err)
 	}
 
-	log.Println("migration successful")
+	logger.Info().Msg("migration successful")
 }

@@ -7,8 +7,9 @@ import (
 //TODO: decided to use env from the dockerfile
 
 type Config struct {
-	Server   ServerConfig
-	Database DatabaseConfig
+	Server          ServerConfig
+	Database        DatabaseConfig
+	RunningInDocker bool `mapstructure:"RUNNING_IN_DOCKER"`
 }
 
 type ServerConfig struct {
@@ -34,6 +35,7 @@ func LoadConfig() (*Config, error) {
 	viper.SetDefault("DB_PASSWORD", "password")
 	viper.SetDefault("DB_NAME", "entain-task")
 	viper.SetDefault("MIGRATIONS_ENABLED", true)
+	viper.SetDefault("RUNNING_IN_DOCKER", false)
 
 	config := &Config{
 		Server: ServerConfig{
@@ -45,8 +47,9 @@ func LoadConfig() (*Config, error) {
 			User:              viper.GetString("DB_USER"),
 			DatabaseName:      viper.GetString("DB_NAME"),
 			Password:          viper.GetString("DB_PASSWORD"),
-			MigrationsEnabled: viper.GetBool("migrations_enabled"),
+			MigrationsEnabled: viper.GetBool("MIGRATIONS_ENABLED"),
 		},
+		RunningInDocker: viper.GetBool("RUNNING_IN_DOCKER"),
 	}
 
 	return config, nil
