@@ -21,6 +21,7 @@ type UserTransaction struct {
 	Amount        string           `json:"amount"`
 }
 
+//go:generate mockery --name UserTransactionRepository
 type UserTransactionRepository interface {
 	IsExistingUserTransaction(ctx context.Context, transactionId string) (bool, error)
 	AddTransaction(ctx context.Context, userTransaction UserTransaction) error
