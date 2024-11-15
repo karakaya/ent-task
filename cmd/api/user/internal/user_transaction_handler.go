@@ -12,23 +12,24 @@ import (
 
 type UserTransactionHandler struct {
 	logger                    zerolog.Logger
-	userRepository            pkg.UserRepository
 	userTransactionRepository pkg.UserTransactionRepository
 }
 
 func NewUserHandler(logger zerolog.Logger) *UserTransactionHandler {
 	return &UserTransactionHandler{
 		logger:                    logger,
-		userRepository:            pkg.NewUserRepository(logger),
 		userTransactionRepository: pkg.NewUserTransactionRepository(database.DB),
 	}
 }
+
+//TODO: do we need to check if the user exists?
 
 func (h *UserTransactionHandler) Handle(ctx context.Context, userId uint64, input UserTransactionInput) (*UserTransactionOutput, error) {
 	isExistingTransaction, err := h.userTransactionRepository.IsExistingUserTransaction(ctx, input.TransactionId)
 	if err != nil {
 		return nil, err
 	}
+
 	if isExistingTransaction {
 		return nil, utils.ErrTransactionExists
 	}
