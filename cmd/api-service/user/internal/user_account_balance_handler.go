@@ -14,9 +14,16 @@ type UserAccountBalanceHandler struct {
 }
 
 func NewUserAccountBalanceHandler(logger zerolog.Logger) *UserAccountBalanceHandler {
+	return NewNewUserAccountBalanceHandlerWithInterfaces(logger, pkg.NewUserTransactionRepository(database.DB))
+}
+
+func NewNewUserAccountBalanceHandlerWithInterfaces(
+	logger zerolog.Logger,
+	userTransactionRepository pkg.UserTransactionRepository,
+) *UserAccountBalanceHandler {
 	return &UserAccountBalanceHandler{
 		logger:                    logger,
-		userTransactionRepository: pkg.NewUserTransactionRepository(database.DB),
+		userTransactionRepository: userTransactionRepository,
 	}
 }
 
