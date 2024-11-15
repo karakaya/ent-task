@@ -1,6 +1,6 @@
 # docker-compose.yml
 
-version: '3.8'
+#version: '3.8'
 
 services:
   postgres:
@@ -29,7 +29,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ent-task:latest  #from local image
+#    image: ent-task:latest  #from local image
     container_name: ent-task-api
     restart: always
     ports:
