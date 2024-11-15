@@ -14,7 +14,7 @@ var DB *pgxpool.Pool
 func ConnectToDB(log zerolog.Logger, config *cfg.Config) error {
 	var err error
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s",
-		config.Database.User, config.Database.Password, config.Database.Host, config.Database.Port, config.Database.Table)
+		config.Database.User, config.Database.Password, config.Database.Host, config.Database.Port, config.Database.DatabaseName)
 
 	DB, err = pgxpool.New(context.Background(), connStr)
 	if err != nil {

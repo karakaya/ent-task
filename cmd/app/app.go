@@ -7,6 +7,7 @@ import (
 	"entain-golang-task/database"
 	"entain-golang-task/pkg/cfg"
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -34,7 +35,10 @@ func NewApp() *App {
 		panic("cannot load env config")
 	}
 
-	database.ConnectToDB(logger, config)
+	err = database.ConnectToDB(logger, config)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	//will be enabled by migrations_enabled flag
 	//migrations.MigrateDB()
