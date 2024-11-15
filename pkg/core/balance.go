@@ -39,7 +39,7 @@ func SumAllTransactions(transactions []pkg.UserTransaction) (string, error) {
 
 	//additional validation for (-) negative balance?
 	if totalBalance.Sign() < 0 {
-		return "", fmt.Errorf("negative balance is not allowed")
+		return "", utils.ErrAccountBalanceCannotBeNegative
 	}
 
 	return balanceStr, nil
@@ -70,7 +70,7 @@ func CanAddTransaction(currentBalanceStr string, amountStr string, transactionSt
 	}
 
 	if resultBalance.Sign() < 0 {
-		return false, "", nil
+		return false, "", utils.ErrAccountBalanceCannotBeNegative
 	}
 
 	currentAccountBalance := resultBalance.FloatString(2)

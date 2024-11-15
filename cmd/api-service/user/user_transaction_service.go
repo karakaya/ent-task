@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"entain-golang-task/cmd/api-service/user/internal"
 	"entain-golang-task/pkg"
+	"entain-golang-task/pkg/core"
 	"entain-golang-task/pkg/utils"
 	"errors"
 	"net/http"
@@ -44,6 +45,15 @@ func (s *AccountTransactionService) Handle(w http.ResponseWriter, r *http.Reques
 	}
 
 	defer r.Body.Close()
+
+	//will not check for if amount 0
+	validatedAmount, err := core.ValidateTransactionAmount(input.Amount)
+	if err != nil {
+		utils.WriteJSONError(s.logger, w, http.StatusBadRequest, utils.ErrInvalidAmount)
+		return
+	}
+
+	input.Amount = validatedAmount
 
 	if input.State == "" || (input.State != pkg.StateLose && input.State != pkg.StateWin) {
 		utils.WriteJSONError(s.logger, w, http.StatusBadRequest, utils.ErrInvalidState)
