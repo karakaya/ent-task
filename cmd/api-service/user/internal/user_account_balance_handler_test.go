@@ -2,9 +2,9 @@ package internal_test
 
 import (
 	"context"
-	"entain-golang-task/cmd/api-service/user/internal"
-	"entain-golang-task/pkg"
-	pkgMock "entain-golang-task/pkg/mocks"
+	"ent-golang-task/cmd/api-service/user/internal"
+	"ent-golang-task/pkg"
+	pkgMock "ent-golang-task/pkg/mocks"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"testing"

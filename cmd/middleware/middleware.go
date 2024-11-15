@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"entain-golang-task/pkg/utils"
+	"ent-golang-task/pkg/utils"
 	"github.com/julienschmidt/httprouter"
 	"github.com/rs/zerolog"
 	"mime"

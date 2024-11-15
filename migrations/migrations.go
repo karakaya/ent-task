@@ -2,8 +2,8 @@ package migrations
 
 import (
 	"database/sql"
-	"entain-golang-task/database"
-	"entain-golang-task/pkg/cfg"
+	"ent-golang-task/database"
+	"ent-golang-task/pkg/cfg"
 	"errors"
 	"github.com/rs/zerolog"
 	"log"

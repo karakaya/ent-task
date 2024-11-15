@@ -5,12 +5,12 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: entain-db
+    container_name: ent-db
     restart: always
     environment:
       POSTGRES_USER: username
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: entain-task
+      POSTGRES_DB: ent-task
 #      POSTGRES_INITDB_ARGS: --encoding=UTF8
 #    volumes:
 #      - postgres_data:/var/lib/postgresql/data
@@ -29,18 +29,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: entain-task:latest  #from local image
-    container_name: entain-task-api
+    image: ent-task:latest  #from local image
+    container_name: ent-task-api
     restart: always
     ports:
       - "8080:8080"
     environment:
       SERVER_ADDRESS: ":8080"
-      DB_HOST: entain-db
+      DB_HOST: ent-db
       DB_PORT: "5432"
       DB_USER: "username"
       DB_PASSWORD: "password"
-      DB_NAME: "entain-task"
+      DB_NAME: "ent-task"
       MIGRATIONS_ENABLED: true
     depends_on:
       postgres:

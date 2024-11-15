@@ -1,8 +1,8 @@
 package core
 
 import (
-	"entain-golang-task/pkg"
-	"entain-golang-task/pkg/utils"
+	"ent-golang-task/pkg"
+	"ent-golang-task/pkg/utils"
 	"fmt"
 	"math/big"
 )

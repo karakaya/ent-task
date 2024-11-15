@@ -33,7 +33,7 @@ func LoadConfig() (*Config, error) {
 	viper.SetDefault("DB_USER", "username")
 	viper.SetDefault("DB_HOST", "localhost")
 	viper.SetDefault("DB_PASSWORD", "password")
-	viper.SetDefault("DB_NAME", "entain-task")
+	viper.SetDefault("DB_NAME", "ent-task")
 	viper.SetDefault("MIGRATIONS_ENABLED", true)
 	viper.SetDefault("RUNNING_IN_DOCKER", false)
 

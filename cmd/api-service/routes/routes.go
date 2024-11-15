@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"entain-golang-task/cmd/api-service/user"
-	"entain-golang-task/cmd/middleware"
+	"ent-golang-task/cmd/api-service/user"
+	"ent-golang-task/cmd/middleware"
 	"github.com/julienschmidt/httprouter"
 	"github.com/rs/zerolog"
 )

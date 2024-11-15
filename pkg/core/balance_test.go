@@ -1,9 +1,9 @@
 package core_test
 
 import (
-	"entain-golang-task/pkg"
-	"entain-golang-task/pkg/core"
-	"entain-golang-task/pkg/utils"
+	"ent-golang-task/pkg"
+	"ent-golang-task/pkg/core"
+	"ent-golang-task/pkg/utils"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -67,7 +67,7 @@ func TestCanAddTransaction(t *testing.T) {
 
 	t.Run("positive balance - can add transaction", func(t *testing.T) {
 		canAddTransaction, newBalance, err := core.CanAddTransaction("10.10", "20", "lose")
-		
+
 		assert.Exactly(t, utils.ErrAccountBalanceCannotBeNegative, err)
 		assert.Exactly(t, "", newBalance)
 		assert.False(t, canAddTransaction)

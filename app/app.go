@@ -2,11 +2,11 @@ package app
 
 import (
 	"context"
-	"entain-golang-task/cmd/api-service/routes"
-	"entain-golang-task/cmd/middleware"
-	"entain-golang-task/database"
-	"entain-golang-task/migrations"
-	"entain-golang-task/pkg/cfg"
+	"ent-golang-task/cmd/api-service/routes"
+	"ent-golang-task/cmd/middleware"
+	"ent-golang-task/database"
+	"ent-golang-task/migrations"
+	"ent-golang-task/pkg/cfg"
 	"errors"
 	"log"
 	"net/http"

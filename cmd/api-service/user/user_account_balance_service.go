@@ -2,8 +2,8 @@ package user
 
 import (
 	"context"
-	"entain-golang-task/cmd/api-service/user/internal"
-	"entain-golang-task/pkg/utils"
+	"ent-golang-task/cmd/api-service/user/internal"
+	"ent-golang-task/pkg/utils"
 	"net/http"
 	"strconv"
 

@@ -2,10 +2,10 @@ package internal
 
 import (
 	"context"
-	"entain-golang-task/database"
-	"entain-golang-task/pkg"
-	"entain-golang-task/pkg/core"
-	"entain-golang-task/pkg/utils"
+	"ent-golang-task/database"
+	"ent-golang-task/pkg"
+	"ent-golang-task/pkg/core"
+	"ent-golang-task/pkg/utils"
 
 	"github.com/rs/zerolog"
 )

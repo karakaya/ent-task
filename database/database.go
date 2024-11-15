@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"entain-golang-task/pkg/cfg"
+	"ent-golang-task/pkg/cfg"
 	"fmt"
 
 	"github.com/jackc/pgx/v5/pgxpool"

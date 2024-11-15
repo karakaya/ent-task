@@ -1,7 +1,7 @@
 package main
 
 import (
-	"entain-golang-task/app"
+	"ent-golang-task/app"
 )
 
 func main() {

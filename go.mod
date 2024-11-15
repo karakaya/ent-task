@@ -1,4 +1,4 @@
-module entain-golang-task
+module ent-golang-task
 
 go 1.23.3
 
