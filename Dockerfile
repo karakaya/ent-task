@@ -20,7 +20,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -ldflags="-s -w" -trimpath -o api ./cmd/api
+RUN go build -ldflags="-s -w" -trimpath -o api ./cmd/api-service
 
 #user distroless to occupy min space
 FROM --platform=$TARGETPLATFORM gcr.io/distroless/static:latest
@@ -30,5 +30,6 @@ USER nonroot:nonroot
 WORKDIR /app
 
 COPY --from=builder /app/api .
+COPY --from=builder /app/migrations ./migrations
 
 ENTRYPOINT ["/app/api"]

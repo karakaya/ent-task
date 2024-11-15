@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 	"encoding/json"
-	"entain-golang-task/cmd/api/user/internal"
+	"entain-golang-task/cmd/api-service/user/internal"
 	"entain-golang-task/pkg"
 	"entain-golang-task/pkg/utils"
 	"errors"

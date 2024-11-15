@@ -2,9 +2,10 @@ package app
 
 import (
 	"context"
-	"entain-golang-task/cmd/api/routes"
+	"entain-golang-task/cmd/api-service/routes"
 	"entain-golang-task/cmd/middleware"
 	"entain-golang-task/database"
+	"entain-golang-task/migrations"
 	"entain-golang-task/pkg/cfg"
 	"errors"
 	"log"
@@ -41,7 +42,11 @@ func NewApp() *App {
 	}
 
 	//will be enabled by migrations_enabled flag
-	//migrations.MigrateDB()
+	logger.Info().Msgf("migrations_enabled %v", config.Database.MigrationsEnabled)
+	if config.Database.MigrationsEnabled {
+		migrations.MigrateDB()
+	}
+
 	wrappedRouter := middleware.ErrorHandlingMiddleware(logger, router)
 
 	server := &http.Server{

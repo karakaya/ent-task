@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"log"
+	"os"
 
 	"entain-golang-task/database"
 
@@ -28,11 +29,12 @@ func MigrateDB() {
 	if err != nil {
 		log.Fatalf("failed to create migration driver: %v", err)
 	}
-
+	log.Print(os.Getwd())
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://migrations",
+		"file:///app/migrations",
 		"postgres", driver,
 	)
+
 	if err != nil {
 		log.Fatalf("failed to initialize migrate instance: %v", err)
 	}
