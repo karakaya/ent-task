@@ -2,8 +2,10 @@ package middleware
 
 import (
 	"entain-golang-task/pkg/utils"
+	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"github.com/rs/zerolog"
+	"mime"
 	"net/http"
 )
 
@@ -15,8 +17,6 @@ var validSourceTypes = map[string]bool{
 	"payment": true,
 }
 
-//ignored content-type json check
-
 func SourceTypeCheckMiddleware(logger zerolog.Logger) Middleware {
 	return func(next httprouter.Handle) httprouter.Handle {
 		return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -27,6 +27,23 @@ func SourceTypeCheckMiddleware(logger zerolog.Logger) Middleware {
 
 				return
 			}
+
+			next(w, r, ps)
+		}
+	}
+}
+
+func ContentTypeCheckMiddleware(logger zerolog.Logger) Middleware {
+	return func(next httprouter.Handle) httprouter.Handle {
+		return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+			contentType := r.Header.Get("Content-Type")
+			mediaType, _, err := mime.ParseMediaType(contentType)
+			if err != nil || mediaType != "application/json" {
+				logger.Warn().Msg("Invalid or missing Content-Type header")
+				utils.WriteJSONError(logger, w, http.StatusUnsupportedMediaType, utils.ErrInvalidContentType)
+				return
+			}
+
 			next(w, r, ps)
 		}
 	}
@@ -35,6 +52,8 @@ func SourceTypeCheckMiddleware(logger zerolog.Logger) Middleware {
 func ErrorHandlingMiddleware(logger zerolog.Logger, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
+			fmt.Println("!!!")
+			logger.Info().Msg("!!!!")
 			if err := recover(); err != nil {
 				logger.Error().Interface("error", err).Msg("Unhandled error occurred")
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -43,4 +62,11 @@ func ErrorHandlingMiddleware(logger zerolog.Logger, next http.Handler) http.Hand
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func Chain(h httprouter.Handle, middlewares ...Middleware) httprouter.Handle {
+	for i := len(middlewares) - 1; i >= 0; i-- {
+		h = middlewares[i](h)
+	}
+	return h
 }

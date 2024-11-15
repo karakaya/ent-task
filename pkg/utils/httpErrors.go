@@ -8,8 +8,10 @@ var (
 	ErrInvalidState      = errors.New("invalid state")
 
 	ErrInvalidUserId     = errors.New("invalid userId")
-	ErrInvalidJsonBody   = errors.New("invalid json body")
 	ErrInternalServerErr = errors.New("internal server error")
+
+	ErrInvalidJsonBody    = errors.New("invalid json body")
+	ErrInvalidContentType = errors.New("invalid content-type")
 
 	ErrInvalidAmount                  = errors.New("invalid amount")
 	ErrAccountBalanceCannotBeNegative = errors.New("transaction would result in negative balance")

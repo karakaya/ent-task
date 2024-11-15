@@ -37,6 +37,8 @@ func (s *UserTransactionService) Handle(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
+	panic("tet")
+
 	var input internal.UserTransactionInput
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		utils.WriteJSONError(s.logger, w, http.StatusBadRequest, utils.ErrInvalidJsonBody)
