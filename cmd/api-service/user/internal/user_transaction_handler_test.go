@@ -35,4 +35,39 @@ func TestUserTransactionHandler_SaveUserTransaction(t *testing.T) {
 		assert.Nil(t, transactionOutput)
 		assert.Exactly(t, utils.ErrAccountBalanceCannotBeNegative, err)
 	})
+
+	t.Run("positive balance", func(t *testing.T) {
+		userTransactionRepository := new(pkgMock.UserTransactionRepository)
+		userTransactionRepository.On("IsExistingUserTransaction", context.TODO(), "transaction-1").Return(false, nil)
+		userTransactions := []pkg.UserTransaction{{
+			UserId:        1,
+			TransactionId: "transaction-1",
+			State:         "win",
+			Amount:        "20.0",
+		}}
+
+		userTransactionRepository.On("GetAllTransactionsByUserId", context.TODO(), uint64(1)).Return(userTransactions, nil)
+		userTransactionRepository.On("AddTransaction", context.TODO(), pkg.UserTransaction{
+			UserId:        uint64(1),
+			TransactionId: "transaction-1",
+			State:         "win",
+			Amount:        "2.20",
+		}).Return(nil)
+
+		handler := internal.NewUserTransactionHandlerWithInterfaces(zerolog.Logger{}, userTransactionRepository)
+
+		transactionOutput, err := handler.SaveUserTransaction(context.TODO(), uint64(1), internal.UserTransactionInput{
+			State:         "win",
+			Amount:        "2.20",
+			TransactionId: "transaction-1",
+		})
+
+		expectedTransactionOutput := &internal.UserTransactionOutput{
+			TransactionId:  "transaction-1",
+			AccountBalance: "22.20",
+		}
+
+		assert.Nil(t, err)
+		assert.Exactly(t, expectedTransactionOutput, transactionOutput)
+	})
 }
